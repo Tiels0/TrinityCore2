@@ -23,7 +23,9 @@
 #include "World.h"
 #include "DatabaseEnv.h"
 #include "AccountMgr.h"
-
+#ifndef MAX_CHANNELS_FOR_EACH_PLAYER
+#define MAX_CHANNELS_FOR_EACH_PLAYER 12
+#endif
 Channel::Channel(const std::string& name, uint32 channel_id, uint32 Team)
  : m_announce(true), m_ownership(true), m_name(name), m_password(""), m_flags(0), m_channelId(channel_id), m_ownerGUID(0), m_Team(Team)
 {
@@ -709,9 +711,13 @@ void Channel::Invite(uint64 p, const char *newname)
     WorldPacket data;
     if (!newp->GetSocial()->HasIgnore(GUID_LOPART(p)))
     {
-        MakeInvite(&data, p);
-        SendToOne(&data, newp->GetGUID());
-        data.clear();
+        if((newp->m_channels->size()) <= MAX_CHANNELS_FOR_EACH_PLAYER)
+        {
+            MakeInvite(&data, p);
+            SendToOne(&data, newp->GetGUID());
+            data.clear();
+        }
+        //else return; if first way will not work, uncomment this, it's may work.
     }
     MakePlayerInvited(&data, newp->GetName());
     SendToOne(&data, p);
