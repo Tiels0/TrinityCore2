@@ -717,7 +717,7 @@ void Channel::Invite(uint64 p, const char *newname)
             SendToOne(&data, newp->GetGUID());
             data.clear();
         }
-        //else return; if first way will not work, uncomment this, it's may work.
+        else return;
     }
     MakePlayerInvited(&data, newp->GetName());
     SendToOne(&data, p);
